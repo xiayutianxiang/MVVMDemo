@@ -10,7 +10,13 @@ package com.example.mvvmdemo.player
  * =====播放状态改变
  * 通知ui改变
  */
-class PlayerPresenter {
+class PlayerPresenter private constructor(){
+
+    companion object{
+        val instance by lazy {
+            PlayerPresenter()
+        }
+    }
 
     private val callbackList = arrayListOf<IPlayerCallback>()
 

@@ -12,7 +12,7 @@ class PlayerActivity : AppCompatActivity(), IPlayerCallback {
 
     //view层持有presenter层
     private val playerPresenter by lazy {
-        PlayerPresenter()
+        PlayerPresenter.instance
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

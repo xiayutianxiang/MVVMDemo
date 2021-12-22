@@ -12,7 +12,7 @@ class FlowPlayerControllerActivity : AppCompatActivity(), IPlayerCallback {
      */
 
     private val playerPresenter by lazy {
-        PlayerPresenter()
+        PlayerPresenter.instance
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
