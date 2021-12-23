@@ -1,5 +1,9 @@
 package com.example.mvvmdemo.player
 
+import android.os.Looper
+import androidx.arch.core.executor.ArchTaskExecutor
+import com.example.mvvmdemo.App
+
 /**
  * 数据容器，可以监听数据的变化
  */
@@ -11,7 +15,15 @@ class DataListenContainer<T> {
 
         //数据变化时候，就通知更新
         set(value: T?) {
-            blocks.forEach { it.invoke(value) }
+            //判断当前线程是不是主线程
+            //如果是，直接执行，否则切换到主线程
+            if (Looper.getMainLooper().thread== Thread.currentThread()) {
+                blocks.forEach { it.invoke(value) }
+            }else{
+                App.handler.post{
+                    blocks.forEach { it.invoke(value) }
+                }
+            }
         }
 
     fun addListener(block: (T?) -> Unit) {
