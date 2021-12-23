@@ -6,7 +6,7 @@ import android.util.Log
 import com.example.mvvmdemo.R
 import kotlinx.android.synthetic.main.activity_player.*
 
-class PlayerActivity : AppCompatActivity(), IPlayerCallback {
+class PlayerActivity : AppCompatActivity() {
 
     private val TAG = "PlayerActivity"
 
@@ -19,9 +19,31 @@ class PlayerActivity : AppCompatActivity(), IPlayerCallback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_player)
 
-        playerPresenter.registerCallback(this)
+        //playerPresenter.registerCallback(this)
 
         initListener()
+        initDataListener()
+    }
+
+    /**
+     * 对数据进行监听
+     */
+    private fun initDataListener() {
+        playerPresenter.currentMusic.addListener {
+            //音乐内容发生变化
+            songTitle.text = it?.name
+            Log.d(TAG,"封面改变了...${it?.cover}")
+        }
+        playerPresenter.currentPlayState.addListener {
+            when(it){
+                PlayerPresenter.PlayState.PAUSE->{
+                    playOrPauseBtn.text = "播放"
+                }
+                PlayerPresenter.PlayState.PLAYING->{
+                    playOrPauseBtn.text = "暂停"
+                }
+            }
+        }
     }
 
     /**
@@ -40,34 +62,5 @@ class PlayerActivity : AppCompatActivity(), IPlayerCallback {
         playPre.setOnClickListener {
             playerPresenter.playPre()
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        if (playerPresenter!=null) {
-            playerPresenter.unregisterCallback(this)
-        }
-    }
-
-    override fun onTitleChange(title: String) {
-        songTitle.text = title
-    }
-
-    override fun onProgressChange(current: Int) {
-
-    }
-
-    override fun onPlaying() {
-        //播放中显示暂停
-        playOrPauseBtn.text = "暂停"
-    }
-
-    override fun onPlayerPause() {
-        //暂停中显示播放
-        playOrPauseBtn.text = "播放"
-    }
-
-    override fun onCoverChange(cover: String) {
-        Log.d(TAG,"onCoverChange " + cover)
     }
 }
