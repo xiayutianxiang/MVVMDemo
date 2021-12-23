@@ -11,6 +11,7 @@ class FlowPlayerControllerActivity : AppCompatActivity(), IPlayerCallback {
      *当多个地方用到presenter时，可能存在多个无用的接口方法
      */
 
+
     private val playerPresenter by lazy {
         PlayerPresenter.instance
     }
