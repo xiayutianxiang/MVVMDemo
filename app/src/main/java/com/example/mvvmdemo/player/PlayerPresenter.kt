@@ -1,5 +1,7 @@
 package com.example.mvvmdemo.player
 
+import android.util.Log
+import com.example.mvvmdemo.lifecycle.ILifecycle
 import com.example.mvvmdemo.player.domain.Music
 
 
@@ -14,7 +16,9 @@ import com.example.mvvmdemo.player.domain.Music
  * 相关数据
  *  当前歌曲、状态
  */
-class PlayerPresenter private constructor() {
+class PlayerPresenter private constructor():ILifecycle {
+
+    private val TAG = "PlayerPresenter"
 
     private val playerModel by lazy {
         PlayModel()
@@ -120,5 +124,29 @@ class PlayerPresenter private constructor() {
         //2.设置给播放器
         //3.等待播放回调通知
         currentPlayState.value = PlayState.PLAYING
+    }
+
+    override fun onCreate() {
+
+    }
+
+    override fun onStart() {
+        Log.d(TAG,"开始网络状态监听")
+    }
+
+    override fun onResume() {
+
+    }
+
+    override fun onPause() {
+
+    }
+
+    override fun onStop() {
+        Log.d(TAG,"停止网络状态监听")
+    }
+
+    override fun onDestroy() {
+
     }
 }

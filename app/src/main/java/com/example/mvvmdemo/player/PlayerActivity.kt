@@ -4,15 +4,26 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import com.example.mvvmdemo.R
+import com.example.mvvmdemo.base.BaseActivity
+import com.example.mvvmdemo.musicList.MusicPresenter
 import kotlinx.android.synthetic.main.activity_player.*
 
-class PlayerActivity : AppCompatActivity() {
+class PlayerActivity : BaseActivity() {
+
+    private val musicPresenter by lazy {
+        MusicPresenter()
+    }
 
     private val TAG = "PlayerActivity"
 
     //view层持有presenter层
     private val playerPresenter by lazy {
         PlayerPresenter.instance
+    }
+
+    init {
+        lifeProvider.addLifecycleListener(musicPresenter)
+        lifeProvider.addLifecycleListener(playerPresenter)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,6 +34,8 @@ class PlayerActivity : AppCompatActivity() {
 
         initListener()
         initDataListener()
+
+        musicPresenter.onCreate()
     }
 
     /**

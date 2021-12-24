@@ -1,7 +1,6 @@
 package com.example.mvvmdemo.player
 
 import android.os.Looper
-import androidx.arch.core.executor.ArchTaskExecutor
 import com.example.mvvmdemo.App
 
 /**
