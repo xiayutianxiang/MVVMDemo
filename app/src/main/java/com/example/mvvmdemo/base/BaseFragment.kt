@@ -3,11 +3,12 @@ package com.example.mvvmdemo.base
 import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import com.example.mvvmdemo.lifecycle.ILifecycleOwner
 import com.example.mvvmdemo.lifecycle.LifeState
 import com.example.mvvmdemo.lifecycle.LifecycleProvider
 import com.example.mvvmdemo.musicList.MusicPresenter
 
-open class BaseFragment : Fragment(){
+open class BaseFragment : Fragment(),ILifecycleOwner{
 
     val lifeProvider by lazy {
         LifecycleProvider()
@@ -41,5 +42,9 @@ open class BaseFragment : Fragment(){
     override fun onDestroy() {
         super.onDestroy()
         lifeProvider.makeLifeState(LifeState.DESTROY)
+    }
+
+    override fun getLifecycleProvider(): LifecycleProvider {
+        return lifeProvider
     }
 }

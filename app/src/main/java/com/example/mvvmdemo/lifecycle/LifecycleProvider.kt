@@ -8,21 +8,25 @@ package com.example.mvvmdemo.lifecycle
 
 class LifecycleProvider {
 
-    private var currentLifeState: LifeState? = null
-    private val lifecycleList = arrayListOf<ILifecycle>()
+    private var currentLifeState: LifeState = LifeState.DESTROY
+    private val lifecycleList = arrayListOf<AbsLifecycle>()
 
-    fun addLifecycleListener(lifecycle: ILifecycle) {
+    fun addLifecycleListener(lifecycle: AbsLifecycle) {
         if (!lifecycleList.contains(lifecycle)) {
             lifecycleList.add(lifecycle)
         }
     }
 
-    fun removeLifecycleListener(lifecycle: ILifecycle) {
+    fun removeLifecycleListener(lifecycle: AbsLifecycle) {
         lifecycleList.remove(lifecycle)
     }
 
     fun makeLifeState(state: LifeState) {
         currentLifeState = state
+        lifecycleList.forEach {
+            it.onViewLifeStateChange(state)
+        }
+
         when (state) {
             LifeState.CREATE -> {
                 dispatchCreateState()
@@ -46,28 +50,46 @@ class LifecycleProvider {
     }
 
     private fun dispatchDestroyState() {
-
+        lifecycleList.forEach {
+            it.onDestroy()
+        }
     }
 
     private fun dispatchStopState() {
-
+        lifecycleList.forEach {
+            it.onStop()
+        }
     }
 
     private fun dispatchPauseState() {
-
+        lifecycleList.forEach {
+            it.onPause()
+        }
     }
 
     private fun dispatchResumeState() {
-
+        lifecycleList.forEach {
+            it.onResume()
+        }
     }
 
     private fun dispatchStartState() {
-
+        lifecycleList.forEach {
+            it.onStart()
+        }
     }
 
     private fun dispatchCreateState() {
         lifecycleList.forEach {
             it.onCreate()
         }
+    }
+
+    fun isAtLeast(state: LifeState) : Boolean {
+        println("current state $currentLifeState === $state")
+        val isAsLeastState:Boolean = currentLifeState > state
+        println("isAsLeastState ==> $isAsLeastState" )
+        return currentLifeState > state
+
     }
 }

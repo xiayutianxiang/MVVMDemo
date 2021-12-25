@@ -1,9 +1,10 @@
 package com.example.mvvmdemo.musicList
 
 import android.util.Log
-import android.view.View
+import com.example.mvvmdemo.lifecycle.AbsLifecycle
 import com.example.mvvmdemo.lifecycle.ILifecycle
 import com.example.mvvmdemo.lifecycle.ILifecycleOwner
+import com.example.mvvmdemo.lifecycle.LifeState
 import com.example.mvvmdemo.player.DataListenContainer
 import com.example.mvvmdemo.player.domain.Music
 
@@ -50,11 +51,10 @@ class MusicPresenter(owner: ILifecycleOwner){
             }
         })
     }
-    inner class ViewLifeImpl:ILifecycle {
+    inner class ViewLifeImpl:AbsLifecycle() {
 
         override fun onCreate() {
             //监听GPS信号变化
-
             Log.d(TAG, "开始信号监听")
         }
 
@@ -77,6 +77,10 @@ class MusicPresenter(owner: ILifecycleOwner){
 
         override fun onDestroy() {
 
+        }
+
+        override fun onViewLifeStateChange(state: LifeState) {
+            TODO("Not yet implemented")
         }
     }
 }

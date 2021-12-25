@@ -1,7 +1,9 @@
 package com.example.mvvmdemo.player
 
 import android.util.Log
+import com.example.mvvmdemo.lifecycle.AbsLifecycle
 import com.example.mvvmdemo.lifecycle.ILifecycle
+import com.example.mvvmdemo.lifecycle.LifeState
 import com.example.mvvmdemo.player.domain.Music
 
 
@@ -16,7 +18,7 @@ import com.example.mvvmdemo.player.domain.Music
  * 相关数据
  *  当前歌曲、状态
  */
-class PlayerPresenter private constructor():ILifecycle {
+class PlayerPresenter private constructor() :AbsLifecycle(){
 
     private val TAG = "PlayerPresenter"
 
@@ -126,27 +128,7 @@ class PlayerPresenter private constructor():ILifecycle {
         currentPlayState.value = PlayState.PLAYING
     }
 
-    override fun onCreate() {
-
-    }
-
-    override fun onStart() {
-        Log.d(TAG,"开始网络状态监听")
-    }
-
-    override fun onResume() {
-
-    }
-
-    override fun onPause() {
-
-    }
-
-    override fun onStop() {
-        Log.d(TAG,"停止网络状态监听")
-    }
-
-    override fun onDestroy() {
+    override fun onViewLifeStateChange(state: LifeState) {
 
     }
 }

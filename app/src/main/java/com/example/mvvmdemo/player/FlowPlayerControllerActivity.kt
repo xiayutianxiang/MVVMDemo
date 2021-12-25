@@ -3,9 +3,10 @@ package com.example.mvvmdemo.player
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.mvvmdemo.R
+import com.example.mvvmdemo.base.BaseActivity
 import kotlinx.android.synthetic.main.activity_flow_player.*
 
-class FlowPlayerControllerActivity : AppCompatActivity() {
+class FlowPlayerControllerActivity : BaseActivity() {
 
     /**
      *当多个地方用到presenter时，可能存在多个无用的接口方法
@@ -25,18 +26,13 @@ class FlowPlayerControllerActivity : AppCompatActivity() {
     }
 
     private fun initDataListener() {
-        playerPresenter.currentPlayState.addListener {
+        playerPresenter.currentPlayState.addListener(this) {
             if (it == PlayerPresenter.PlayState.PLAYING) {
                 playOrPauseBtn.text = "暂停"
             }else{
                 playOrPauseBtn.text = "播放"
             }
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        //playerPresenter.unregisterCallback(this)
     }
 
     private fun initListener() {

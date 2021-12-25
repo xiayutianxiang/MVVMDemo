@@ -11,10 +11,6 @@ class MusicActivity : BaseActivity(){
         MusicPresenter(this)
     }
 
-    init {
-        lifeProvider.addLifecycleListener(musicPresenter)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_music)
@@ -27,14 +23,14 @@ class MusicActivity : BaseActivity(){
      * 监听数据变化
      */
     private fun initDataListener() {
-        musicPresenter.musicList.addListener {
+        musicPresenter.musicList.addListener(this) {
             println(Thread.currentThread().name)
 
             //数据变化
             println("加载状态：${it?.size}")
         }
 
-        musicPresenter.loadState.addListener {
+        musicPresenter.loadState.addListener(this) {
             //数据状态变化
             println("加载状态：$it")
         }

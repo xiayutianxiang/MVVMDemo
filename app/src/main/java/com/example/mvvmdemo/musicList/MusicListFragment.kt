@@ -8,7 +8,4 @@ class MusicListFragment : BaseFragment() {
         MusicPresenter(this)
     }
 
-    init {
-        lifeProvider.addLifecycleListener(musicPresenter)
-    }
 }
