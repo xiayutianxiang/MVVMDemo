@@ -1,15 +1,14 @@
 package com.example.mvvmdemo.musicList
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.mvvmdemo.R
 import com.example.mvvmdemo.base.BaseActivity
 import kotlinx.android.synthetic.main.activity_music.*
 
-class MusicActivity : BaseActivity() {
+class MusicActivity : BaseActivity(){
 
     private val musicPresenter by lazy {
-        MusicPresenter()
+        MusicPresenter(this)
     }
 
     init {

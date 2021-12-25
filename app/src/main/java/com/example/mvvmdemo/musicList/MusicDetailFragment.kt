@@ -3,7 +3,7 @@ import com.example.mvvmdemo.base.BaseFragment
 
 class MusicDetailFragment:BaseFragment() {
     private val musicPresenter by lazy {
-        MusicPresenter()
+        MusicPresenter(this)
     }
 
     init {
