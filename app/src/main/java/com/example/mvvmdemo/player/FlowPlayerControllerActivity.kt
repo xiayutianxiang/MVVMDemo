@@ -1,7 +1,8 @@
 package com.example.mvvmdemo.player
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import android.util.Log
+import androidx.lifecycle.Observer
 import com.example.mvvmdemo.R
 import com.example.mvvmdemo.base.BaseActivity
 import kotlinx.android.synthetic.main.activity_flow_player.*
@@ -16,6 +17,16 @@ class FlowPlayerControllerActivity : BaseActivity() {
         PlayerPresenter.instance
     }
 
+    class LivePlayerStateObserver : Observer<PlayerPresenter.PlayState> {
+        private val TAG = "LivePlayerStateObserver"
+        override fun onChanged(t: PlayerPresenter.PlayState?) {
+            Log.d(TAG,"播放器界面。。。live data ---> 当前的状态")
+        }
+    }
+
+    private val livePlayerObserver by lazy {
+        LivePlayerStateObserver()
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_flow_player)
@@ -26,6 +37,7 @@ class FlowPlayerControllerActivity : BaseActivity() {
     }
 
     private fun initDataListener() {
+        LivePlayerState.instances.observeForever(livePlayerObserver)
         playerPresenter.currentPlayState.addListener(this) {
             if (it == PlayerPresenter.PlayState.PLAYING) {
                 playOrPauseBtn.text = "暂停"
@@ -39,5 +51,10 @@ class FlowPlayerControllerActivity : BaseActivity() {
         playOrPauseBtn.setOnClickListener {
             playerPresenter.doPlayOrPause()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        LivePlayerState.instances.removeObserver(livePlayerObserver)
     }
 }

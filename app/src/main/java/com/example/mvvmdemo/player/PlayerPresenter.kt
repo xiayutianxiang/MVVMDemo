@@ -44,6 +44,8 @@ class PlayerPresenter private constructor() :AbsLifecycle(){
         NONE, PLAYING, PAUSE, LOADING
     }
 
+    var livePlayerState = LivePlayerState.instances
+
     var currentPlayState = DataListenContainer<PlayState>()
 
     //view要实现IPlayerCallback中方法，在这里注册（也可以不注册），IPlayerCallback可能会在多个地方调用
@@ -74,10 +76,13 @@ class PlayerPresenter private constructor() :AbsLifecycle(){
             //开始播放音乐
             //dispatchPlayingState()
             currentPlayState.value = PlayState.PLAYING
+
+            livePlayerState.postValue(PlayState.PLAYING)
         } else {
             //暂停播放
            // dispatchPauseState()
             currentPlayState.value = PlayState.PAUSE
+            livePlayerState.postValue(PlayState.PAUSE)
         }
     }
 

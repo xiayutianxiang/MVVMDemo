@@ -2,10 +2,12 @@ package com.example.mvvmdemo.player
 
 import android.os.Bundle
 import android.util.Log
+import androidx.lifecycle.Observer
 import com.example.mvvmdemo.R
 import com.example.mvvmdemo.base.BaseActivity
 import com.example.mvvmdemo.musicList.MusicPresenter
 import kotlinx.android.synthetic.main.activity_player.*
+import java.util.*
 
 class PlayerActivity : BaseActivity() {
 
@@ -31,10 +33,24 @@ class PlayerActivity : BaseActivity() {
 
     }
 
+    class LivePlayerStateObserver : Observer<PlayerPresenter.PlayState>{
+        private val TAG = "LivePlayerStateObserver"
+        override fun onChanged(t: PlayerPresenter.PlayState?) {
+            Log.d(TAG,"播放器界面。。。live data ---> 当前的状态")
+        }
+    }
+
+    private val livePlayerStateObserver by lazy {
+        LivePlayerStateObserver()
+    }
+
     /**
      * 对数据进行监听
      */
     private fun initDataListener() {
+
+        LivePlayerState.instances.observeForever(livePlayerStateObserver)
+
         playerPresenter.currentMusic.addListener(this) {
             //音乐内容发生变化
             songTitle.text = it?.name
@@ -68,5 +84,10 @@ class PlayerActivity : BaseActivity() {
         playPre.setOnClickListener {
             playerPresenter.playPre()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        LivePlayerState.instances.removeObserver(livePlayerStateObserver)
     }
 }

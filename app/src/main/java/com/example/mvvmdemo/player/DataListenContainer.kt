@@ -1,8 +1,11 @@
 package com.example.mvvmdemo.player
 
 import android.os.Looper
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.OnLifecycleEvent
 import com.example.mvvmdemo.App
-import com.example.mvvmdemo.lifecycle.*
 
 /**
  * 数据容器，可以监听数据的变化
@@ -10,7 +13,7 @@ import com.example.mvvmdemo.lifecycle.*
 class DataListenContainer<T> {
 
     private val blocks = arrayListOf<(T?) -> Unit>()
-    private val viewLifecycleProviders = hashMapOf<(T?) -> Unit,LifecycleProvider >()
+    private val viewLifecycleProviders = hashMapOf<(T?) -> Unit,Lifecycle >()
     var value: T? = null
 
         //数据变化时候，就通知更新
@@ -31,8 +34,9 @@ class DataListenContainer<T> {
         }
 
     private fun dispatchValue(it: (T?) -> Unit, value: T?) {
-        val viewModelProvider: LifecycleProvider? = viewLifecycleProviders[it]
-        if (viewModelProvider != null && viewModelProvider.isAtLeast(LifeState.START)) {
+        val lifecycle: Lifecycle? = viewLifecycleProviders[it]
+        if (lifecycle != null && lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+            println("更新ui")
             it.invoke(value)
         }
     }
@@ -41,13 +45,14 @@ class DataListenContainer<T> {
      * 可能有多个view进行监听
      * 所有owner-block需要管理
      */
-    fun addListener(owner: ILifecycleOwner, valueObserver: (T?) -> Unit) {
+    fun addListener(owner: LifecycleOwner, valueObserver: (T?) -> Unit) {
         //viewLifecycleProviders.put(block,owner.getLifecycleProvider())
-        val lifecycleProvider:LifecycleProvider = owner.getLifecycleProvider()
-        viewLifecycleProviders[valueObserver] =lifecycleProvider
+        val lifecycle: Lifecycle = owner.lifecycle
+
+        viewLifecycleProviders[valueObserver] = lifecycle
 
         val  observerWrapper = ValueObserverWrapper(valueObserver)
-        lifecycleProvider.addLifecycleListener(observerWrapper)
+        lifecycle.addObserver(observerWrapper)
 
         //当view destroy
         if (!blocks.contains(valueObserver)) {
@@ -56,14 +61,12 @@ class DataListenContainer<T> {
     }
 
     inner class ValueObserverWrapper(private val valueObserver:(T?)->Unit):
-        AbsLifecycle() {
+        LifecycleObserver {
 
-        override fun onViewLifeStateChange(state: LifeState) {
-            //当监听到view生命周期为destroy时，就把lifecycleProvider从集合中删除、
-            if (state===LifeState.DESTROY) {
-                viewLifecycleProviders.remove(valueObserver)
-            }
+        @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+        fun removeValueObserver(){
+            println("removeValueObserver...")
+            viewLifecycleProviders.remove(valueObserver)
         }
-
     }
 }
